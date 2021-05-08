@@ -1,8 +1,8 @@
 /*
-ÀÔ·ÂµÈ N°³ÀÇ Á¤¼ö(¼öÇÐ¼ºÀû) Áß 3µîÀÇ ¼ºÀûÀ» Ãâ·ÂÇÏ´Â ¹®Á¦. algorithmÀÇ Á¤·Ä ¾Ë°í¸®Áò sort()¸¦ »ç¿ëÇÏ¿© ½±°Ô Ç®¾ú´Ù.
+ìž…ë ¥ëœ Nê°œì˜ ì •ìˆ˜(ìˆ˜í•™ì„±ì ) ì¤‘ 3ë“±ì˜ ì„±ì ì„ ì¶œë ¥í•˜ëŠ” ë¬¸ì œ. STLì˜ ì •ë ¬ ì•Œê³ ë¦¬ì¦˜ sort()ë¥¼ ì‚¬ìš©í•˜ì—¬ ì‰½ê²Œ í’€ì—ˆë‹¤.
 
-Âü°í : stlÀÇ Á¤·Ä ¾Ë°í¸®ÁòÀº Á¤È®È÷ ¸»ÇÏÀÚ¸é quick sort°¡ ¾Æ´Ñ intro sort ¾Ë°í¸®ÁòÀ» »ç¿ëÇÑ´Ù.
-intro sort´Â quick sort¸¦ º¯ÇüÇÑ ¾Ë°í¸®ÁòÀ¸·Î ÃÖ¾ÇÀÇ °æ¿ì¿¡µµ O(nlogn)À» À¯ÁöÇÏ¸ç ºñ±³ ±â¹ÝÀÇ Á¤·Ä ¾Ë°í¸®Áò Áß¿¡¼­ °¡Àå ºü¸£´Ù.
+ì°¸ê³  : STLì˜ ì •ë ¬ ì•Œê³ ë¦¬ì¦˜ì€ ì •í™•ížˆ ë§í•˜ìžë©´ quick sortê°€ ì•„ë‹Œ intro sort ì•Œê³ ë¦¬ì¦˜ì„ ì‚¬ìš©í•œë‹¤.
+intro sortëŠ” quick sortë¥¼ ë³€í˜•í•œ ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ ìµœì•…ì˜ ê²½ìš°ì—ë„ O(nlogn)ì„ ìœ ì§€í•˜ë©° ë¹„êµ ê¸°ë°˜ì˜ ì •ë ¬ ì•Œê³ ë¦¬ì¦˜ ì¤‘ì—ì„œ ê°€ìž¥ ë¹ ë¥´ë‹¤.
 */
 
 #include <iostream>
