@@ -1,0 +1,110 @@
+/*
+문제 출처 : https://www.acmicpc.net/problem/2848 (백준 온라인 저지)
+
+알고스팟어는 알고스팟 커뮤니티에서 사용하는 언어다. 이 언어는 영어 알파벳을 사용하지만, 영어와 알파벳 순서는 다르다.
+알고스팟어의 알파벳 사전 순으로 정렬되어 있는 단어의 목록이 주어졌을 때, 알고스팟어의 알파벳 순서를 구하는 문제.
+
+정점(알파벳)들의 순서관계와 관련된 문제로 위상 정렬을 이용하여 풀 수 있다.
+위상 정렬 알고리즘의 구현 자체는 어렵지 않지만 알고리즘을 수행할 인접그래프를 만드는 게 매우 까다로웠다.
+사전순으로 정렬되어 입력된다는 걸 고려해야 하며 여러 가지 예외 처리도 필요하다.
+예를 들어, 두 단어의 접두어가 동일하지만 앞 순서의 단어 길이가 더 긴 경우(abcd -> abc 순으로 입력되는 경우)
+또는 똑같은 단어가 두 번 입력되는 경우도 고려해야 실패하는 테스트케이스가 없을 것이다.
+알파벳이므로 아스키 코드를 이용하여 int형으로 변환 후 그래프를 완성하였다.
+*/
+
+#include <string>
+#include <vector>
+#include <iostream>
+#include <unordered_map>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+vector<vector<int> > check(26, vector<int>(26)); // 간선의 중복을 방지하기 위한 check 배열
+
+unordered_map<int, int> indegree; // 각 정점별 진입차수 저장, (알파벳(int 형으로 변환), 진입차수) 쌍으로 저장하기 위해 map 사용
+vector<vector<int> > v(26); // 알파벳을 정점, 순서관계를 간선으로 표현하기 위한 인접그래프
+
+vector<int> result; // 결과(알파벳 순서)를 int형으로 담을 배열
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+
+	int n;
+	cin >> n;
+
+	vector<string> temp; // 입력으로 받은 n개의 단어들을 저장할 배열
+
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+
+		for (int j = 0; j < s.length(); j++) { // 각 정점(입력 받은 알파벳) 별 진입차수를 0으로 초기화
+			indegree[s[j] - 'a'] = 0;
+		}
+
+		temp.push_back(s);
+	}
+
+	for (int i = 0; i < n - 1; i++) { // 첫 번째 단어부터 자신보다 순서가 뒤인 단어들과의 순서관계를 정리한다.
+		for (int k = i + 1; k < n; k++) { // i번째 단어와 비교할 k번째 단어
+			for (int j = 0; j < temp[i].length(); j++) { // 사전순이므로 비교하는 두 단어의 j번째 알파벳이 같으면 그 다음 j + 1번째 알파벳을 가지고 비교해야 한다. 
+				if (j >= temp[k].size()) { // (예외 처리) 두 단어의 접두어가 동일하지만 앞 순서의 단어 길이가 더 긴 경우
+					cout << "!"; // 모순 발생
+					return 0;
+				}
+
+				if (temp[i][j] != temp[k][j]) { // 두 단어의 j번째 알파벳이 서로 다르다면 이 j번째 알파벳 간의 순서관계에 의해 두 단어의 사전순서가 결정된다 -> 의미있는 순서관계이므로 위상정렬 수행을 위한 작업을 해준다.
+					if (check[temp[i][j] - 'a'][temp[k][j] - 'a'] == 0) { // 순서관계가 앞에서 이미 정리됐던 알파벳들이라면 중복으로 처리해선 안 된다.
+						check[temp[i][j] - 'a'][temp[k][j] - 'a'] = 1;
+						v[temp[i][j] - 'a'].push_back(temp[k][j] - 'a');
+						indegree[temp[k][j] - 'a']++;
+					}
+
+					break; // 사전순이므로 더이상의 비교는 의미 X
+				}
+			}
+		}
+	}
+
+	// 여기서부턴 위상정렬 수행
+	queue<int> q;
+
+	for (auto it = indegree.begin(); it != indegree.end(); it++) {
+		if (it->second == 0)
+			q.push(it->first);
+	}
+
+	int cnt = 0;
+	while (!q.empty()) {
+		if (q.size() >= 2) { // 한 개 이상의 순서가 발생하는 경우
+			cout << "?";
+			return 0;
+		}
+
+		for (int i = 0; i < v[q.front()].size(); i++) { // q.front()에 해당하는 알파벳이 처리되면
+			indegree[v[q.front()][i]]--; // 이 알파벳보다 순서가 뒤였던 알파벳들의 진입차수가 하나 감소한다.
+
+			if (indegree[v[q.front()][i]] == 0) // 진입차수가 0이 되면 자신보다 순서가 높은 알파벳들이 다 처리됐다는 뜻이므로 큐에 넣는다.
+				q.push(v[q.front()][i]);
+		}
+
+		cnt++;
+		result.push_back(q.front());
+		q.pop();
+	}
+
+	if (cnt != indegree.size()) { // 순서가 모순되는 경우
+		cout << "!";
+		return 0;
+	}
+
+	for (int i = 0; i < result.size(); i++) {
+		cout << (char)(result[i] + 'a');
+	}
+
+	return 0;
+}
