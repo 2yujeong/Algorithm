@@ -39,6 +39,7 @@ int main() {
 			for (int j = 0; j < w; j++) {
 				if (map[i][j] == 1) {
 					cnt++;
+					map[i][j] = 0;
 					queue<pair<int, int>> q;
 					q.push({ i, j });
 
